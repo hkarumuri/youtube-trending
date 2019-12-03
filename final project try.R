@@ -46,3 +46,5 @@ head(topChannels, 20)
 #9 Screen Junkies                           182
 #10 NBA                                     181
 
+topChannels = USvideos %>% group_by(channel_title) %>% count(channel_title) %>% arrange(desc(n))
+head(topChannels, 20)
