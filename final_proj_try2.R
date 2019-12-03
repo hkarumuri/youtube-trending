@@ -44,6 +44,7 @@ source("exploration.R")
 ##Looks into what percent of trending videos are from talk shows
 category_count = final %>% count(category) %>% arrange(desc(n)) %>% rename("overall_count" = "n")
 
+#---Video Presence among videos by Category---#
 final %>% 
   filter(channel_title %in% talk_show_list) %>% 
   count(category) %>%
@@ -56,6 +57,7 @@ final %>%
 #2 Comedy           551          3457   0.159 
 #3 People & Blogs    52          3210   0.0162
 
+#---Video Presense among all videos---#
 USvideos %>%
   count(isTalkShow) %>% 
   mutate(presence = n/sum(n))
@@ -64,16 +66,26 @@ USvideos %>%
 #1 FALSE      39734   0.970 
 #2 TRUE        1215   0.0297
 
+#---Channel Presense among all channels---#
 USvideos %>%
   count(channel_title, isTalkShow) %>% 
   count(isTalkShow) %>% 
-  mutate(presence = n/sum(n))
+  mutate(presence = n/sum(n)) 
 # A tibble: 2 x 3
 #isTalkShow     n presence
 #<lgl>      <int>    <dbl>
 #1 FALSE       2200  0.997  
 #2 TRUE           7  0.00317
 
+#---Channel Presense among channels by Category---#
+final %>%
+  mutate(isTalkShow = (channel_title %in% talk_show_list)) %>% 
+  count(isTalkShow, category, channel_title) %>% 
+  count(isTalkShow, category) %>% 
+  filter(category %in% c("Comedy", "Entertainment", "People & Blogs")) %>% 
+  group_by(category) %>% 
+  mutate(p = n/sum(n))
+  
   #geom_text(aes(label = ifelse(isTalkShow, channel_title, "")), size = 2)
 #for talkshows: the graph shows that there is no correlation between average views and amount of times trending
 
