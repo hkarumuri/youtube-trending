@@ -16,4 +16,14 @@ US_cateogry_id1 = as.data.frame(US_category_id$items) %>%
 
 b = left_join(a, US_cateogry_id1, by = "key")
 
+id_to_category = b %>% mutate(key = str_extract(b$key, "^(id|snippet.title)")) %>% 
+  mutate(index = rep(1:(nrow(b)/2), each = 2)) %>% 
+  spread(key, val) %>% 
+  select(id, snippet.title) %>% 
+  rename(category = snippet.title) %>% 
+  arrange(id) %>% 
+  mutate(id = as.integer(id))
+
+final = left_join(us_trend_vids, id_to_category, by = c("category_id" = "id"))
+
 
